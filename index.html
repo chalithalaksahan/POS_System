@@ -5,11 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="assets/css/style.css">
-     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-[#D8F9F5]">
-   <div>
-    <h1>Supermarket POS System</h1>
+    <div class="m-6 min-h-screen">
+        <!-- Lable  -->
+        <div class="flex items-center bg-white rounded-2xl shadow-md">
+            <div><img src="assets/img/shopping-cart.svg" class="h-20 ml-5 p-2 text-[#36BBA7]" alt="">
+            </div>
+            <h1 class="sm:text-2xl md:text-3xl lg:text-4xl ml-3 font-bold text-[#36BBA7]">Supermarket POS System</h1>
+        </div>
+        <!-- Buttons -->
+        <div class="mt-5">
+            <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 ">
+                <button class=" bg-white">POS</button>
+                <button class=" bg-white">Products</button>
+                <button class=" bg-white">Customers</button>
+                <button class=" bg-white">Orders</button>
+            </div>
+        </div>
+        <!-- Customer Select -->
+         <div class="mainConatainer">
+            <div class="mt-5 bg-white p-8">
+                <h2>Select Customer</h2>
+                <div>
+                <select class="border-1 p-5 w-full mt-5" name="selectCustomer" id="selectCustomer">
+                    <option value="" >--Select Customer--</option>
+                </select>
+                </div>
+            </div>
+            <!-- product Area -->
+            <div class="bg-white p-5 w-full h-100 mt-5 ">
+                <h2>Products</h2>
+                <div id="products"></div>
+            </div>
+            <div class="bg-white p-5 w-full h-100 mt-5 ">
+                <div class="flex items-center">
+                    <img src="assets/img/shopping-cart-sm.svg" class="h-10" alt="">
+                    <h2 class="ml-3">Shopping Cart</h2>
+                </div>
+                
+                <div class="shoppingCart"></div>
+            </div>
+        </div>
    </div>
     <script src="assets/js/app.js"></script>
 </body>
