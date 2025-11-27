@@ -19,6 +19,31 @@ function posInterface(){
     clearBtn();
     pos.classList.remove('bg-white','text-black');
     pos.classList.add('bg-[#36BBA7]','text-white');
+    mainContainer.innerHTML = `
+        <!-- Customer Select -->
+            <div class="mt-7 bg-white p-8 rounded-xl">
+                <h2 id="cus" class="text-2xl font-bold">Select Customer</h2>
+                <div>
+                <select class="border-1 rounded-2xl p-5 w-full mt-5" name="selectCustomer" id="selectCustomer">
+                    <option value="" >--Select Customer--</option>
+                    <option value="" >chalitha laksahan</option>
+                </select>
+                </div>
+            </div>
+            <!-- product Area -->
+            <div class="bg-white p-8 w-full h-100 mt-7 rounded-xl">
+                <h2 class="text-2xl font-bold">Products</h2>
+                <div id="products"></div>
+            </div>
+            <div class="bg-white p-8 w-full h-100 mt-7 rounded-xl">
+                <div class="flex items-center">
+                    <img src="assets/img/shopping-cart-sm.svg" class="h-10" alt="">
+                    <h2 class="text-2xl font-bold ml-3">Shopping Cart</h2>
+                </div>
+                
+                <div id="shoppingCart" ></div>
+            </div>
+    `;
 }
 
 function productInterface(){ 
@@ -44,3 +69,6 @@ product.addEventListener('click',productInterface);
 customer.addEventListener('click',customerInterface);
 order.addEventListener('click',orderInterface);
 
+function addProduct(){
+    
+}
