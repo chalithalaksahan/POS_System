@@ -19,16 +19,16 @@
         <!-- Buttons -->
         <div class="mt-7">
             <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 ">
-                <button class="bg-[#36BBA7] p-3 rounded-lg font-lg text-xl font-semibold text-white">POS</button>
-                <button class="bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Products</button>
-                <button class="bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Customers</button>
-                <button class="bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Orders</button>
+                <button id="pos"  class="category-btn bg-[#36BBA7] p-3 rounded-lg font-lg text-xl font-semibold text-white">POS</button>
+                <button id="product"  class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Products</button>
+                <button id="customer" class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Customers</button>
+                <button id="order" class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Orders</button>
             </div>
         </div>
+        <div id="mainContainer" >
         <!-- Customer Select -->
-         <div class="mainConatainer">
             <div class="mt-7 bg-white p-8 rounded-xl">
-                <h2 class="text-2xl font-bold">Select Customer</h2>
+                <h2 id="cus" class="text-2xl font-bold">Select Customer</h2>
                 <div>
                 <select class="border-1 rounded-2xl p-5 w-full mt-5" name="selectCustomer" id="selectCustomer">
                     <option value="" >--Select Customer--</option>
