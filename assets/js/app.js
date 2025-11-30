@@ -69,8 +69,20 @@ product.addEventListener('click',productInterface);
 customer.addEventListener('click',customerInterface);
 order.addEventListener('click',orderInterface);
 
-const btnAddProduct = document.getElementById("addProduct");
-const addProduct = document.getElementById("addProductModel");
-const modal = document.getElementById("addProductModel");
-
+// open model
+function openModal(){
+    console.log("Hello World");
+    // currentEditId = null;
+    // document.getElementById('modelTitle').textContent = 'Add Product';
+    // document,getElementById('productForm').reset();
+    // document.getElementById('productId').value='';
+    document.getElementById('modal').classList.remove('hidden');
+    
+}
+//close model
+function closeModal(){
+    document.getElementById('modal').classList.add('hidden');
+    document.getElementById('productForm').reset();
+    currentEditId = null;
+}
 
