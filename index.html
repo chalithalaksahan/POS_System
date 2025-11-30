@@ -22,45 +22,48 @@
         <div class="mt-7">
             <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 ">
                 <button id="pos"
-                    class="category-btn bg-[#36BBA7] p-3 rounded-lg font-lg text-xl font-semibold text-white">POS</button>
+                    class="category-btn bg-[#36BBA7] p-3 rounded-lg font-lg text-xl font-semibold text-white flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7 22q-.825 0-1.412-.587T5 20t.588-1.412T7 18t1.413.588T9 20t-.587 1.413T7 22m10 0q-.825 0-1.412-.587T15 20t.588-1.412T17 18t1.413.588T19 20t-.587 1.413T17 22M6.15 6l2.4 5h7l2.75-5zM5.2 4h14.75q.575 0 .875.513t.025 1.037l-3.55 6.4q-.275.5-.737.775T15.55 13H8.1L7 15h11q.425 0 .713.288T19 16t-.288.713T18 17H7q-1.125 0-1.7-.987t-.05-1.963L6.6 11.6L3 4H2q-.425 0-.712-.288T1 3t.288-.712T2 2h1.625q.275 0 .525.15t.375.425zm3.35 7h7z"/></svg>
+                    POS</button>
                 <button id="product"
-                    class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Products</button>
+                    class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 19.425v-6.85L5 9.1v6.85zm2 0l6-3.475V9.1l-6 3.475zm-2 2.3L4 17.7q-.475-.275-.737-.725t-.263-1v-7.95q0-.55.263-1T4 6.3l7-4.025Q11.475 2 12 2t1 .275L20 6.3q.475.275.738.725t.262 1v7.95q0 .55-.262 1T20 17.7l-7 4.025Q12.525 22 12 22t-1-.275m5-13.2l1.925-1.1L12 4l-1.95 1.125zm-4 2.325l1.95-1.125L8.025 6.3l-1.95 1.125z"/></svg>
+                    Products</button>
                 <button id="customer"
-                    class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Customers</button>
+                    class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M4.625 22q-.4 0-.725-.325t-.325-.725v-2.625q0-2.25 1.4-3.975t3.6-2.2q-1 .7-1.55 1.762t-.55 2.288v4.75q0 .275.075.55t.25.5zM8.3 22q-.425 0-.737-.312t-.313-.738V16.2q0-1.75 1.238-2.975T11.475 12H16.2q1.75 0 2.975 1.225T20.4 16.2v1.6q0 1.75-1.225 2.975T16.2 22zM12 9.9q-1.65 0-2.8-1.15t-1.15-2.8t1.15-2.8T12 2t2.8 1.15t1.15 2.8t-1.15 2.8T12 9.9"/></svg>
+                    Customers</button>
                 <button id="order"
-                    class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black">Orders</button>
+                    class="category-btn bg-white p-3 rounded-lg font-lg text-xl font-semibold text-black flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 56 56"><path fill="currentColor" d="M14.559 51.953h27.586c4.218 0 6.656-2.437 6.656-7.266V20.43c0-4.828-2.461-7.266-7.36-7.266h-3.726c-.14-4.922-4.406-9.117-9.703-9.117c-5.32 0-9.586 4.195-9.727 9.117H14.56c-4.875 0-7.36 2.414-7.36 7.266v24.258c0 4.851 2.485 7.265 7.36 7.265M28.012 7.61c3.304 0 5.812 2.485 5.93 5.555h-11.86c.094-3.07 2.602-5.555 5.93-5.555M14.629 48.18c-2.344 0-3.656-1.242-3.656-3.679V20.617c0-2.437 1.312-3.68 3.656-3.68h26.766c2.296 0 3.632 1.243 3.632 3.68V44.5c0 2.438-1.336 3.68-2.953 3.68Z"/></svg>
+                    Orders</button>
             </div>
         </div>
         <div id="mainContainer">
             <!-- product details -->
             <div class="mt-7 bg-white p-8 rounded-xl">
-                <div class="flex justify-between">
-                    <h2 class="text-2xl font-bold">Product Management</h2>
-                    <button type="button" onclick="openModal()"  class="flex items-center gap-1 content-center font-semibold p-3 rounded-lg bg-[#36BBA7] text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-plus" viewBox="0 0 16 16">
-                            <path
-                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                        </svg>Add Product</button>
+                <div class="mt-7 bg-white p-8 rounded-xl">
+                <h2 id="cus" class="text-2xl font-bold">Select Customer</h2>
+                <div>
+                <select class="border-1 rounded-2xl p-5 w-full mt-5" name="selectCustomer" id="selectCustomer">
+                    <option value="" >--Select Customer--</option>
+                    <option value="" >chalitha laksahan</option>
+                </select>
                 </div>
-                <div class="overflow-x-auto mt-5">
-                    <table class="w-full">
-                        <!-- thead -->
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Price</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Category</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Stock</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productBody" class="bg-white devide-y devide-gray-200ju4">
-                            <!-- tbody -->
-                        </tbody>
-                    </table>
-                </div>   
+            </div>
+            <!-- product Area -->
+            <div class="bg-white p-8 w-full h-100 mt-7 rounded-xl">
+                <h2 class="text-2xl font-bold">Products</h2>
+                <div id="products"></div>
+            </div>
+            <div class="bg-white p-8 w-full h-100 mt-7 rounded-xl">
+                <div class="flex items-center">
+                    <img src="assets/img/shopping-cart-sm.svg" class="h-10" alt="">
+                    <h2 class="text-2xl font-bold ml-3">Shopping Cart</h2>
+                </div>
+                
+                <div id="shoppingCart" ></div>
+            </div> 
         </div>
     </div>
     
