@@ -69,6 +69,8 @@ product.addEventListener('click',productInterface);
 customer.addEventListener('click',customerInterface);
 order.addEventListener('click',orderInterface);
 
-function addProduct(){
-    
-}
+const btnAddProduct = document.getElementById("addProduct");
+const addProduct = document.getElementById("addProductModel");
+const modal = document.getElementById("addProductModel");
+
+
