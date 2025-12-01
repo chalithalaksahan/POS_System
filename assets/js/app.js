@@ -143,6 +143,9 @@ function productInterface(){
         </div>
      </div>
     `;
+     setTimeout(() => {
+        loadProducts();
+    }, 0);
 }
 
 function customerInterface(){ 
@@ -173,6 +176,7 @@ function customerInterface(){
                         </thead>
                         <tbody id="productBody" class="bg-white devide-y devide-gray-200ju4">
                             <!-- tbody -->
+                           
                         </tbody>
                     </table>
                 </div>   
@@ -184,7 +188,7 @@ function customerInterface(){
             <!-- modal header -->
             <div class="flex justify-between items-center border-b px-6 py-4">
                 <h2 id="modalTitle" class="text-xl font-bold text-gray-800">
-                Add Product
+                Add Customer
                 </h2>
                 <button onclick="closeCustomerModal()" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,35 +197,28 @@ function customerInterface(){
                 </button>
             </div>
             <!-- modal body -->
-             <form id="productForm" class="p-6">
-                <input type="hidden" id="productId">
+             <form id="customerForm" class="p-6">
+                <input type="hidden" id="customerId">
                 <div class="mb-4">
-                    <label for="productName" class="block text-gray-700 text-sm font-bold mb-2">
-                        Product Name
+                    <label for="customerName" class="block text-gray-700 text-sm font-bold mb-2">
+                        Name
                     </label>
                     <input type="text" id="productName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1 focus:ring-2 focus:ring-[$36BBA7]"
-                    placeholder="Enter product name">
+                    placeholder="Enter name">
                 </div>
                 <div class="mb-4">
-                    <label for="productPrice" class="block text-gray-700 text-sm font-bold mb-2">
-                        Price
+                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
+                        E-mail
                     </label>
-                    <input type="text" id="productPrice" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
-                    placeholder="Enter price">
+                    <input type="text" id="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
+                    placeholder="Enter E-mail">
                 </div>
                 <div class="mb-4">
-                    <label for="productCategory" class="block text-gray-700 text-sm font-bold mb-2">
-                        Category
+                    <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">
+                        Phone
                     </label>
-                    <input type="text" id="productCategory" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
-                    placeholder="Enter category">
-                </div>
-                <div class="mb-6">
-                    <label for="productStock" class="block text-gray-700 text-sm font-bold mb-2">
-                        Stock
-                    </label>
-                    <input type="text" id="productStock" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
-                    placeholder="Enter stock">
+                    <input type="text" id="phone" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
+                    placeholder="Enter phone number">
                 </div>
                 <!-- Modal Footer -->
                  <div class="flex justify-center gap-3">
@@ -268,12 +265,12 @@ product.addEventListener('click',productInterface);
 customer.addEventListener('click',customerInterface);
 order.addEventListener('click',orderInterface);
 
+
+
 // open model
 function openProductModal(){
-    console.log("Hello World");
     currentEditId = null;
     document.getElementById('modalTitle').textContent = 'Add Product';
-  //  document,getElementById('productForm').reset();
     document.getElementById('productId').value='';
     document.getElementById('proModal').classList.remove('hidden');
     
@@ -291,4 +288,150 @@ function openCustomerModal(){
 
 function closeCustomerModal(){
     document.getElementById('cusModal').classList.add('hidden');
+}
+
+function getNextProductId() {
+    let nextId = localStorage.getItem('nextProductId');
+    
+    if (!nextId) {
+        const products = JSON.parse(localStorage.getItem('productData')) || [];
+        if (products.length === 0) {
+            nextId = 1;
+        } else {
+            const maxId = Math.max(...products.map(p => p.proId || 0));
+            nextId = maxId + 1;
+        }
+        localStorage.setItem('nextProductId', nextId.toString());
+    }
+    
+    return parseInt(nextId);
+}
+
+function incrementProductId() {
+    const currentId = getNextProductId();
+    const nextId = currentId + 1;
+    localStorage.setItem('nextProductId', nextId.toString());
+    return currentId; 
+}
+//form Submit
+
+document.addEventListener('submit', e => {
+     if (e.target && e.target.id === 'productForm') {
+   e.preventDefault();
+
+   
+    const productId = incrementProductId();
+    const productName = document.getElementById('productName').value.trim();
+    const productPrice = document.getElementById('productPrice').value.trim();
+    const productCategory = document.getElementById('productCategory').value.trim();
+    const productStock = document.getElementById('productStock').value.trim();
+
+      let products = localStorage.getItem('productData');
+      let productsArray = products ? JSON.parse(products) : [];
+
+    const product = {
+        proId : productId,
+        proName : productName,
+        proPrice : productPrice,
+        proCategory : productCategory,
+        proStock : productStock 
+
+    };
+    productsArray.push(product);
+    localStorage.setItem('productData', JSON.stringify(productsArray));
+    document.getElementById('proModal').classList.remove('hidden');
+    loadProducts();
+    }
+});
+   
+function loadProducts(){
+     const products = JSON.parse(localStorage.getItem('productData')) || [];
+     const tbody = document.getElementById('productBody');
+
+     tbody.innerHTML = '';
+
+       if (products.length === 0) {
+        // Show message when no products
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                    No products found. Add your first product!
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    // Add each product as a table row
+    products.forEach(product => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50';
+        row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                ${product.proId || product.id || '-'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${product.proName || product.name || '-'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                $${product.proPrice || product.price || '0.00'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${product.proCategory || product.category || '-'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${product.proStock || product.stock || '0'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button onclick="editProduct(${product.proId || product.id})" 
+                    class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2 text-xs">
+                    Edit
+                </button>
+                <button onclick="deleteProduct(${product.proId || product.id})" 
+                    class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">
+                    Delete
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+        
+
+    });
+    
+    console.log(`Displayed ${products.length} products in table`);
+
+
+}
+
+function editProduct(id) {
+    const products = JSON.parse(localStorage.getItem('productData')) || [];
+    const product = products.find(p => p.proId === id);
+    
+    if (product) {
+        document.getElementById('productId').value = product.proId;
+        document.getElementById('productName').value = product.proName;
+        document.getElementById('productPrice').value = product.proPrice;
+        document.getElementById('productCategory').value = product.proCategory;
+        document.getElementById('productStock').value = product.proStock;
+        
+        document.getElementById('modalTitle').textContent = 'Edit Product';
+        document.getElementById('proModal').classList.remove('hidden');
+    }
+}
+
+function deleteProduct(id) {
+    if (confirm(`Are you sure you want to delete product ID ${id}?`)) {
+        let products = JSON.parse(localStorage.getItem('productData')) || [];
+        
+        const productIndex = products.findIndex(p => p.proId === id);
+        
+        if (productIndex !== -1) {
+            products.splice(productIndex, 1);
+            
+            localStorage.setItem('productData', JSON.stringify(products));
+            
+            loadProducts();
+            alert(`Product ID ${id} deleted successfully!`);
+        }
+    }
 }
