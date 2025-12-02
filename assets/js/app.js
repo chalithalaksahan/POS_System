@@ -43,8 +43,95 @@ function posInterface(){
                 <div id="shoppingCart" ></div>
             </div>
     `;
+     setTimeout(() => {
+        const customers = JSON.parse(localStorage.getItem('customerData')) || [];
+        const selectElement = document.getElementById('selectCustomer');
+        
+        customers.forEach(customer => {
+            const option = document.createElement('option');
+            option.value = customer.cusName;
+            option.textContent = customer.cusName;
+            selectElement.appendChild(option);
+        });
+        displayProducts();
+    }, 0);
 }
 
+function displayProducts() {
+
+    const products = JSON.parse(localStorage.getItem('productData')) || [];
+    const productsContainer = document.getElementById('products');
+    
+    if (products.length === 0) {
+        productsContainer.innerHTML = `
+            <div class="text-center py-10">
+                <div class="text-gray-400 text-5xl mb-4">📦</div>
+                <h3 class="text-xl font-semibold text-gray-600">No Products Yet</h3>
+                <p class="text-gray-500 mt-2">Add your first product to get started</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Create product grid
+    productsContainer.innerHTML = `
+        <div class="mb-4 flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Available Products (${products.length})</h3>
+            <div class="text-sm text-gray-500">
+                Showing all products
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            ${products.map(product => createProductCard(product)).join('')}
+        </div>
+    `;
+}
+
+function createProductCard(product) {
+    const isInStock = product.proStock > 0;
+    
+    return `
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden">
+            <!-- Stock indicator -->
+            <div class="h-1 ${isInStock ? 'bg-green-500' : 'bg-red-500'}"></div>
+            
+            <div class="p-5">
+                
+                <!-- Product Name -->
+                <h3 class="text-lg font-bold text-gray-800 truncate mb-2" title="${product.proName}">
+                    ${product.proName}
+                </h3>
+                
+                <!-- Price -->
+                <div class="mb-4">
+                    <span class="text-3xl font-bold text-blue-700">Rs ${parseFloat(product.proPrice).toFixed(2)}</span>
+                </div>
+                
+                <!-- Category & Stock -->
+                <div class="flex justify-between items-center mb-5">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        ${product.proCategory}
+                    </span>
+                    <div class="text-right">
+                        <div class="text-sm font-semibold ${isInStock ? 'text-green-600' : 'text-red-600'}">
+                            ${isInStock ? 'In Stock' : 'Out of Stock'}
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            ${product.proStock} units
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add to Cart Button -->
+                <button onclick="addProductToCart('${product.proId}')" 
+                    class="w-full ${isInStock ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800' : 'bg-gray-300 cursor-not-allowed'} text-white font-medium py-3 rounded-lg transition-all duration-300"
+                    ${!isInStock ? 'disabled' : ''}>
+                    ${isInStock ? '➕ Add to Cart' : 'Out of Stock'}
+                </button>
+            </div>
+        </div>
+    `;
+}
 function productInterface(){ 
     clearBtn();
     product.classList.remove('bg-white','text-black');
@@ -376,7 +463,7 @@ function loadProducts(){
                 ${product.proName || product.name || '-'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                $${product.proPrice || product.price || '0.00'}
+                Rs ${product.proPrice || product.price || '0.00'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 ${product.proCategory || product.category || '-'}
@@ -475,7 +562,7 @@ document.addEventListener('submit', e => {
     const customerPhone = document.getElementById('phone').value.trim();
 
 
-      let customers = localStorage.getItem('productData');
+      let customers = localStorage.getItem('customerData');
       let customersArray = customers ? JSON.parse(customers) : [];
 
     const customer = {
