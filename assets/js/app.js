@@ -123,7 +123,7 @@ function createProductCard(product) {
                 </div>
                 
                 <!-- Add to Cart Button -->
-                <button onclick="addProductToCart('${product.proId}')" 
+                <button onclick="addToCart('${product.proId}')" 
                     class="w-full ${isInStock ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800' : 'bg-gray-300 cursor-not-allowed'} text-white font-medium py-3 rounded-lg transition-all duration-300"
                     ${!isInStock ? 'disabled' : ''}>
                     ${isInStock ? '➕ Add to Cart' : 'Out of Stock'}
@@ -665,4 +665,344 @@ function deleteCustomer(id) {
             alert(`Customer ID ${id} deleted successfully!`);
         }
     }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function shoppingCartInterface() {
+    clearBtn();
+    const shoppingCart = document.getElementById('shoppingCart');
+
+    shoppingCart.innerHTML = `
+        <!-- Shopping Cart Container -->
+
+            <!-- Cart Items -->
+            <div id="cartItemsContainer" class="space-y-4">
+                <!-- Items will be loaded here -->
+            </div>
+            
+            <!-- Empty Cart Message -->
+            <div id="emptyCartMessage" class="hidden text-center py-10">
+                <div class="text-gray-400 text-6xl mb-4">🛒</div>
+                <h3 class="text-xl font-semibold text-gray-600">Your Cart is Empty</h3>
+                <p class="text-gray-500 mt-2">Add products</p>
+            </div>
+            
+            <!-- Divider -->
+            <div class="my-6 border-t border-gray-300"></div>
+            
+            <!-- Summary Section -->
+            <div id="cartSummary" class="hidden">
+                <!-- Subtotal -->
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-700">Subtotal:</span>
+                    <span id="subtotalAmount" class="font-semibold">$0.00</span>
+                </div>
+                
+                <!-- Tax -->
+                <div class="flex justify-between mb-4">
+                    <span class="text-gray-700">Tax (8%):</span>
+                    <span id="taxAmount" class="font-semibold">$0.00</span>
+                </div>
+                
+                <!-- Divider -->
+                <div class="my-4 border-t border-gray-300"></div>
+                
+                <!-- Total -->
+                <div class="flex justify-between mb-6">
+                    <span class="text-lg font-bold">Total:</span>
+                    <span id="totalAmount" class="text-lg font-bold text-green-600">$0.00</span>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex space-x-4">
+                    <button onclick="clearCart()" 
+                            class="flex-1 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600">
+                        Clear Cart
+                    </button>
+                    <button onclick="processCheckout()" 
+                            class="flex-1 py-3 bg-[#36BBA7] text-white font-medium rounded-lg hover:bg-[#2da895]">
+                        Complete Order
+                    </button>
+                </div>
+            </div>
+       
+    `;
+    
+    // Load cart items
+    
+      setTimeout(() => {
+        loadCartItems();
+    }, 0);
+}
+
+// Load and display cart items
+function loadCartItems() {
+    const cart = JSON.parse(localStorage.getItem('posCart')) || [];
+    const cartItemsContainer = document.getElementById('cartItemsContainer');
+    const emptyCartMessage = document.getElementById('emptyCartMessage');
+    const cartSummary = document.getElementById('cartSummary');
+    
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '';
+        emptyCartMessage.classList.remove('hidden');
+        cartSummary.classList.add('hidden');
+        return;
+    }
+    
+    emptyCartMessage.classList.add('hidden');
+    cartSummary.classList.remove('hidden');
+    
+    let subtotal = 0;
+    
+    cartItemsContainer.innerHTML = cart.map(item => {
+        const itemTotal = item.proPrice * item.quantity;
+        subtotal += itemTotal;
+        
+        return `
+            <!-- Cart Item -->
+            <div class="cart-item">
+                <!-- Product Name -->
+                <h3 class="text-lg font-bold mb-1">${item.proName}</h3>
+                
+                <!-- Price and Quantity -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-700">$${item.proPrice.toFixed(2)}</span>
+                    <div class="flex items-center space-x-3">
+                        <div class="flex items-center border border-gray-300 rounded">
+                            <button onclick="updateCartQuantity('${item.proId}', -1)" 
+                                    class="px-3 py-1 hover:bg-gray-100">-</button>
+                            <span class="px-3 py-1">${item.quantity}</span>
+                            <button onclick="updateCartQuantity('${item.proId}', 1)" 
+                                    class="px-3 py-1 hover:bg-gray-100">+</button>
+                        </div>
+                        <button onclick="removeCartItem('${item.proId}')" 
+                                class="text-red-500 hover:text-red-700 text-sm">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Add divider after items
+    cartItemsContainer.innerHTML += `<div class="my-4 border-t border-gray-300"></div>`;
+    
+    // Calculate tax and total
+    const taxRate = 0.08; // 8%
+    const tax = subtotal * taxRate;
+    const total = subtotal + tax;
+    
+    // Update summary
+    document.getElementById('subtotalAmount').textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById('taxAmount').textContent = `$${tax.toFixed(2)}`;
+    document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+}
+
+// Update cart quantity
+function updateCartQuantity(productId, change) {
+    let cart = JSON.parse(localStorage.getItem('posCart')) || [];
+    const itemIndex = cart.findIndex(item => item.proId == productId);
+    
+    if (itemIndex > -1) {
+        const newQuantity = cart[itemIndex].quantity + change;
+        
+        if (newQuantity <= 0) {
+            // Remove item if quantity becomes 0
+            cart.splice(itemIndex, 1);
+        } else {
+            // Update quantity
+            cart[itemIndex].quantity = newQuantity;
+        }
+        
+        localStorage.setItem('posCart', JSON.stringify(cart));
+        loadCartItems();
+        showToast(`Quantity updated`);
+    }
+}
+
+// Remove item from cart
+function removeCartItem(productId) {
+    let cart = JSON.parse(localStorage.getItem('posCart')) || [];
+    cart = cart.filter(item => item.proId != productId);
+    localStorage.setItem('posCart', JSON.stringify(cart));
+    loadCartItems();
+    showToast(`Item removed from cart`);
+}
+
+// Clear entire cart
+function clearCart() {
+    if (confirm('Are you sure you want to clear the cart?')) {
+        localStorage.removeItem('posCart');
+        loadCartItems();
+        showToast('Cart cleared');
+    }
+}
+
+// Process checkout
+function processCheckout() {
+    const cart = JSON.parse(localStorage.getItem('posCart')) || [];
+    
+    if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+    
+    // Calculate totals
+    let subtotal = 0;
+    cart.forEach(item => {
+        subtotal += item.proPrice * item.quantity;
+    });
+    const tax = subtotal * 0.08;
+    const total = subtotal + tax;
+
+     // Get current products to update stock
+    const products = JSON.parse(localStorage.getItem('productData')) || [];
+    
+    // Check stock availability before proceeding
+    let hasStockIssues = false;
+    const stockIssues = [];
+    
+    cart.forEach(cartItem => {
+        const product = products.find(p => p.proId == cartItem.proId);
+        if (product) {
+            if (product.proStock < cartItem.quantity) {
+                hasStockIssues = true;
+                stockIssues.push(`${product.proName}: Requested ${cartItem.quantity}, Available ${product.proStock}`);
+            }
+        } else {
+            hasStockIssues = true;
+            stockIssues.push(`Product ID ${cartItem.proId} not found`);
+        }
+    });
+    
+    if (hasStockIssues) {
+        alert(`Stock issues:\n${stockIssues.join('\n')}`);
+        return;
+    }
+    
+    // Update product stock - DECREASE STOCK HERE
+    const updatedProducts = products.map(product => {
+        const cartItem = cart.find(item => item.proId == product.proId);
+        if (cartItem) {
+            // Decrease stock by purchased quantity
+            const newStock = product.proStock - cartItem.quantity;
+            return {
+                ...product,
+                proStock: Math.max(0, newStock) // Ensure stock doesn't go negative
+            };
+        }
+        return product;
+    });
+    
+    // Save updated products back to localStorage
+    localStorage.setItem('productData', JSON.stringify(updatedProducts));
+    
+    // Create order object
+    const order = {
+        orderId: 'ORD' + Date.now(),
+        items: cart,
+        subtotal: subtotal,
+        tax: tax,
+        total: total,
+        date: new Date().toLocaleString(),
+        status: 'completed'
+    };
+    
+    // Save order to localStorage
+    saveOrder(order);
+    
+    // Clear cart
+    localStorage.removeItem('posCart');
+    
+    // Show success message
+    alert(`Order completed successfully!\nOrder ID: ${order.orderId}\nTotal: $${total.toFixed(2)}`);
+    
+    // Reload cart (will show empty)
+    loadCartItems();
+    
+    // Show toast
+    showToast('Order completed!');
+    loadProducts();
+    
+}
+
+// Save order to history
+function saveOrder(order) {
+    let orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
+    orders.unshift(order); // Add to beginning
+    localStorage.setItem('orderHistory', JSON.stringify(orders));
+}
+
+// Show toast notification
+function showToast(message) {
+    // Remove existing toast if any
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) {
+        existingToast.remove();
+    }
+    
+    // Create new toast
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Remove after 2 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 2000);
+}
+
+// Update cart from input field
+function updateCartInput(productId, newQuantity) {
+    newQuantity = parseInt(newQuantity);
+    if (isNaN(newQuantity) || newQuantity < 1) return;
+    
+    let cart = JSON.parse(localStorage.getItem('posCart')) || [];
+    const itemIndex = cart.findIndex(item => item.proId == productId);
+    
+    if (itemIndex > -1) {
+        cart[itemIndex].quantity = newQuantity;
+        localStorage.setItem('posCart', JSON.stringify(cart));
+        loadCartItems();
+    }
+}
+
+
+    function addToCart(productId, quantity=1) {
+    const products = JSON.parse(localStorage.getItem('productData')) || [];
+    const product = products.find(p => p.proId == productId);
+    
+    if (!product) {
+        alert('Product not found!');
+        return false;
+    }
+    
+    if (product.proStock < quantity) {
+        alert(`Only ${product.proStock} items available in stock!`);
+        return false;
+    }
+    
+    let cart = JSON.parse(localStorage.getItem('posCart')) || [];
+    const existingItemIndex = cart.findIndex(item => item.proId == productId);
+    
+    if (existingItemIndex > -1) {
+        cart[existingItemIndex].quantity += quantity;
+        cart[existingItemIndex].total = cart[existingItemIndex].quantity * cart[existingItemIndex].proPrice;
+    } else {
+        cart.push({
+            proId: product.proId,
+            proName: product.proName,
+            proPrice: parseFloat(product.proPrice),
+            proCategory: product.proCategory,
+            quantity: quantity,
+            total: parseFloat(product.proPrice) * quantity
+        });
+    }
+    
+    localStorage.setItem('posCart', JSON.stringify(cart));
+
+    
+    showToast(`Added ${quantity} × ${product.proName} to cart!`);
+    loadCartItems();
 }
