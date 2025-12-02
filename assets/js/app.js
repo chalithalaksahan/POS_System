@@ -25,8 +25,7 @@ function posInterface(){
                 <h2 id="cus" class="text-2xl font-bold">Select Customer</h2>
                 <div>
                 <select class="border-1 rounded-2xl p-5 w-full mt-5" name="selectCustomer" id="selectCustomer">
-                    <option value="" >--Select Customer--</option>
-                    <option value="" >chalitha laksahan</option>
+                    <option id="selectCus" value="" >--Select Customer--</option>
                 </select>
                 </div>
             </div>
@@ -174,7 +173,7 @@ function customerInterface(){
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="productBody" class="bg-white devide-y devide-gray-200ju4">
+                        <tbody id="customerBody" class="bg-white devide-y devide-gray-200ju4">
                             <!-- tbody -->
                            
                         </tbody>
@@ -203,7 +202,7 @@ function customerInterface(){
                     <label for="customerName" class="block text-gray-700 text-sm font-bold mb-2">
                         Name
                     </label>
-                    <input type="text" id="productName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1 focus:ring-2 focus:ring-[$36BBA7]"
+                    <input type="text" id="customerName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1 focus:ring-2 focus:ring-[$36BBA7]"
                     placeholder="Enter name">
                 </div>
                 <div class="mb-4">
@@ -238,6 +237,9 @@ function customerInterface(){
         </div>
      </div>
     `;
+     setTimeout(() => {
+        loadCustomers();
+    }, 0);
 }
 
 function orderInterface(){
@@ -290,6 +292,7 @@ function closeCustomerModal(){
     document.getElementById('cusModal').classList.add('hidden');
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 function getNextProductId() {
     let nextId = localStorage.getItem('nextProductId');
     
@@ -339,7 +342,7 @@ document.addEventListener('submit', e => {
     };
     productsArray.push(product);
     localStorage.setItem('productData', JSON.stringify(productsArray));
-    document.getElementById('proModal').classList.remove('hidden');
+    document.getElementById('proModal').classList.add('hidden');
     loadProducts();
     }
 });
@@ -432,6 +435,147 @@ function deleteProduct(id) {
             
             loadProducts();
             alert(`Product ID ${id} deleted successfully!`);
+        }
+    }
+}
+
+///////////////////////////////////////////customer Data/////////////////////////////////////////////////////
+function getNextCustomerId() {
+    let nextCusId = localStorage.getItem('nextCustomerId');
+    
+    if (!nextCusId) {
+        const customers = JSON.parse(localStorage.getItem('customerData')) || [];
+        if (customers.length === 0) {
+            nextCusId = 1;
+        } else {
+            const maxCusId = Math.max(...customers.map(p => p.cusId || 0));
+            nextCusId = maxCusId + 1;
+        }
+        localStorage.setItem('nextCustomerId', nextCusId.toString());
+    }
+    
+    return parseInt(nextCusId);
+}
+
+function incrementCustomerId() {
+    const currentCusId = getNextCustomerId();
+    const nextCusId = currentCusId + 1;
+    localStorage.setItem('nextCustomerId', nextCusId.toString());
+    return currentCusId; 
+}
+
+document.addEventListener('submit', e => {
+     if (e.target && e.target.id === 'customerForm') {
+   e.preventDefault();
+
+   
+    const customerId = incrementCustomerId();
+    const customerName = document.getElementById('customerName').value.trim();
+    const customerEmail = document.getElementById('email').value.trim();
+    const customerPhone = document.getElementById('phone').value.trim();
+
+
+      let customers = localStorage.getItem('productData');
+      let customersArray = customers ? JSON.parse(customers) : [];
+
+    const customer = {
+        cusId : customerId,
+        cusName : customerName,
+        cusEmail : customerEmail,
+        cusPhone : customerPhone
+
+    };
+    customersArray.push(customer);
+    localStorage.setItem('customerData', JSON.stringify(customersArray));
+    document.getElementById('cusModal').classList.add('hidden');
+    loadCustomers();
+    }
+});
+
+function loadCustomers(){
+     const customers = JSON.parse(localStorage.getItem('customerData')) || [];
+     const tbody = document.getElementById('customerBody');
+
+     tbody.innerHTML = '';
+
+       if (customers.length === 0) {
+        // Show message when no customers
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                    No customers found. Add first customer!
+                </td>
+            </tr>
+        `;
+        return;
+    }
+     // Add each product as a table row
+    customers.forEach(customer => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50';
+        row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                ${customer.cusId || customer.id || '-'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${customer.cusName || customer.name || '-'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${customer.cusEmail || customer.Email || '0.00'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${customer.cusPhone || customer.phone || '-'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button onclick="editCustomer(${customer.cusId || customer.id})" 
+                    class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2 text-xs">
+                    Edit
+                </button>
+                <button onclick="deleteCustomer(${customer.cusId || customer.id})" 
+                    class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">
+                    Delete
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+        
+
+    });
+    
+    console.log(`Displayed ${customers.length} products in table`);
+
+
+}
+function editCustomer(id) {
+    const customers = JSON.parse(localStorage.getItem('customerData')) || [];
+    const customer = customers.find(p => p.cusId === id);
+    
+    if (product) {
+        document.getElementById('customerId').value = customer.cusId;
+        document.getElementById('customerName').value = customer.cusName;
+        document.getElementById('email').value = customer.cusEmail;
+        document.getElementById('phone').value = customer. cusPhone;
+       
+        
+        document.getElementById('modalTitle').textContent = 'Edit Customer';
+        document.getElementById('cusModal').classList.remove('hidden');
+    }
+}
+
+function deleteCustomer(id) {
+    if (confirm(`Are you sure you want to delete customer ID ${id}?`)) {
+        let customers = JSON.parse(localStorage.getItem('customerData')) || [];
+        
+        const customerIndex = customers.findIndex(p => p.cusId === id);
+        
+        if (customerIndex !== -1) {
+            customers.splice(customerIndex, 1);
+            
+            localStorage.setItem('customerData', JSON.stringify(customers));
+            
+            loadCustomers();
+            alert(`Customer ID ${id} deleted successfully!`);
         }
     }
 }
