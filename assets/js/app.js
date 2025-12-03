@@ -448,7 +448,7 @@ function orderInterface(){
 }
 function loadOrderHistory() {
     const orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
-    const orderTableBody = document.getElementById('orderTableBody');
+    const orderTableBody = document.getElementById('');
     const noOrdersMessage = document.getElementById('noOrdersMessage');
     const totalOrdersCount = document.getElementById('totalOrdersCount');
     const totalRevenue = document.getElementById('totalRevenue');
@@ -478,7 +478,7 @@ function loadOrderHistory() {
             <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm font-medium text-gray-900">${order.orderId}</div>
-                    <div class="text-xs text-gray-500">${order.orderNumber || ''}</div>
+                    <div class="text-sm text-gray-500">${order.orderNumber || ''}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900">${order.customer || 'Walk-in Customer'}</div>
@@ -491,7 +491,7 @@ function loadOrderHistory() {
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-bold text-green-600">$${order.total.toFixed(2)}</div>
+                    <div class="text-sm font-bold text-green-600">Rs. ${order.total.toFixed(2)}</div>
                     <div class="text-xs text-gray-500">
                         Subtotal: $${order.subtotal.toFixed(2)} | Tax: $${order.tax.toFixed(2)}
                     </div>
@@ -591,15 +591,15 @@ function viewOrderDetails(orderId) {
             <div class="border-t border-gray-200 pt-6">
                 <div class="flex justify-between mb-2">
                     <span class="text-gray-600">Subtotal:</span>
-                    <span class="font-medium">$${order.subtotal.toFixed(2)}</span>
+                    <span class="font-medium">Rs.  ${order.subtotal.toFixed(2)}</span>
                 </div>
                 <div class="flex justify-between mb-2">
                     <span class="text-gray-600">Tax (8%):</span>
-                    <span class="font-medium">$${order.tax.toFixed(2)}</span>
+                    <span class="font-medium">Rs. ${order.tax.toFixed(2)}</span>
                 </div>
                 <div class="flex justify-between text-xl font-bold mt-4 pt-4 border-t border-gray-200">
                     <span>Total:</span>
-                    <span class="text-green-600">$${order.total.toFixed(2)}</span>
+                    <span class="text-green-600">Rs. ${order.total.toFixed(2)}</span>
                 </div>
             </div>
             
@@ -1304,8 +1304,8 @@ function processCheckout() {
     const total = subtotal + tax;
 
       // Get selected customer
-    const customerSelect = document.getElementById('selectCustomer');
-    const customerName = customerSelect ? customerSelect.value : 'Walk-in Customer';
+    let customerSelect = document.getElementById('selectCustomer');
+    let customerName = customerSelect ? customerSelect.value : 'Walk-in Customer';
 
      // Get current products to update stock
     const products = JSON.parse(localStorage.getItem('productData')) || [];
@@ -1348,11 +1348,11 @@ function processCheckout() {
     
     // Save updated products back to localStorage
     localStorage.setItem('productData', JSON.stringify(updatedProducts));
-    
+  
     // Create order object
     const order = {
         orderId: 'ORD' + Date.now(),
-        orderNumber: generateOrderNumber(),
+        orderNumber: 23,
         items: [...cart], // Clone cart items
         subtotal: subtotal,
         tax: tax,
@@ -1363,15 +1363,15 @@ function processCheckout() {
         status: 'completed',
         paymentMethod: 'Cash' 
     };
-    
+    console.log('hello');
     // Save order to localStorage
     saveOrder(order);
     
     // Clear cart
     localStorage.removeItem('posCart');
-    
+  
     // Show success message
-    alert(`Order completed successfully!\nOrder ID: ${order.orderId}\nTotal: $${total.toFixed(2)}`);
+    showToast(`Order completed successfully!\nOrder ID: ${order.orderId}\nTotal: $${total.toFixed(2)}`);
     
     // Reload cart (will show empty)
     loadCartItems();
@@ -1379,6 +1379,7 @@ function processCheckout() {
     // Show toast
     showToast('Order completed!');
     loadProducts();
+    loadOrderHistory();
     
 }
 
@@ -1440,7 +1441,8 @@ function updateCartInput(productId, newQuantity) {
 }
 
 
-    function addToCart(productId, quantity=1) {
+    function addToCart(productId) {
+    const quantity = 1;
     const products = JSON.parse(localStorage.getItem('productData')) || [];
     const product = products.find(p => p.proId == productId);
     
