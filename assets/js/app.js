@@ -40,7 +40,13 @@ function posInterface(){
                     <h2 class="text-2xl font-bold ml-3">Shopping Cart</h2>
                 </div>
                 
-                <div id="shoppingCart" ></div>
+                <div id="shoppingCart" >
+                    <div class="flex justify-center text-gray-400 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M7 22q-.825 0-1.412-.587T5 20t.588-1.412T7 18t1.413.588T9 20t-.587 1.413T7 22m10 0q-.825 0-1.412-.587T15 20t.588-1.412T17 18t1.413.588T19 20t-.587 1.413T17 22M6.15 6l2.4 5h7l2.75-5zM5.2 4h14.75q.575 0 .875.513t.025 1.037l-3.55 6.4q-.275.5-.737.775T15.55 13H8.1L7 15h11q.425 0 .713.288T19 16t-.288.713T18 17H7q-1.125 0-1.7-.987t-.05-1.963L6.6 11.6L3 4H2q-.425 0-.712-.288T1 3t.288-.712T2 2h1.625q.275 0 .525.15t.375.425zm3.35 7h7z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 text-center">Your Cart is Empty</h3>
+                    <p class="text-gray-500 mt-2 text-center">Add products</p>
+                </div>
             </div>
     `;
      setTimeout(() => {
@@ -65,7 +71,9 @@ function displayProducts() {
     if (products.length === 0) {
         productsContainer.innerHTML = `
             <div class="text-center py-10">
-                <div class="text-gray-400 text-5xl mb-4">📦</div>
+                <div class="text-gray-400 text-5xl mb-4 flex justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M11 19.425v-6.85L5 9.1v6.85zm2 0l6-3.475V9.1l-6 3.475zm-2 2.3L4 17.7q-.475-.275-.737-.725t-.263-1v-7.95q0-.55.263-1T4 6.3l7-4.025Q11.475 2 12 2t1 .275L20 6.3q.475.275.738.725t.262 1v7.95q0 .55-.262 1T20 17.7l-7 4.025Q12.525 22 12 22t-1-.275m5-13.2l1.925-1.1L12 4l-1.95 1.125zm-4 2.325l1.95-1.125L8.025 6.3l-1.95 1.125z"/></svg>
+                </div>
                 <h3 class="text-xl font-semibold text-gray-600">No Products Yet</h3>
                 <p class="text-gray-500 mt-2">Add your first product to get started</p>
             </div>
@@ -102,7 +110,7 @@ function createProductCard(product) {
                     ${product.proName}
                 </h3>
                 <div class="flex justify-center">
-                   <img class="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48" src="assets/img/${product.proImg}.png">
+                   <img class="w-48 h-48 sm:w-48 sm:h-48 md:w-52 md:h-52 lg:w-58 lg:h-58" src="assets/img/${product.proImg}.png">
                 </div>
                 <!-- Price -->
                 <div class="mb-4">
@@ -434,7 +442,9 @@ function orderInterface(){
             
             <!-- No Orders Message -->
             <div id="noOrdersMessage" class="text-center py-10 hidden">
-                <div class="text-gray-400 text-6xl mb-4">📋</div>
+                <div class= "flex justify-center mb-4 ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="m16.81 8.94l-3.75-3.75L4 14.25V18h3.75zM6 16v-.92l7.06-7.06l.92.92L6.92 16zm13.71-9.96a.996.996 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83l3.75 3.75zM2 20h20v4H2z"/></svg>
+                </div>
                 <h3 class="text-xl font-semibold text-gray-600">No Orders Yet</h3>
                 <p class="text-gray-500 mt-2">Complete your first sale to see orders here</p>
             </div>
@@ -1010,8 +1020,11 @@ function loadProducts(){
         // Show message when no products
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                <div class="flex justify-center"> <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3h-1V2c0-.55-.45-1-1-1s-1 .45-1 1v1H8V2c0-.55-.45-1-1-1s-1 .45-1 1v1H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3m6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1z"/></svg>
+                </div>
                     No products found. Add your first product!
+                    
                 </td>
             </tr>
         `;
@@ -1183,6 +1196,7 @@ function loadCustomers(){
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                    <div class="flex justify-center"> <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3h-1V2c0-.55-.45-1-1-1s-1 .45-1 1v1H8V2c0-.55-.45-1-1-1s-1 .45-1 1v1H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3m6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1z"/></svg></div>
                     No customers found. Add first customer!
                 </td>
             </tr>
@@ -1274,7 +1288,9 @@ function shoppingCartInterface() {
             
             <!-- Empty Cart Message -->
             <div id="emptyCartMessage" class="hidden text-center py-10">
-                <div class="text-gray-400 text-6xl mb-4">🛒</div>
+                <div class="text-gray-400 flex justify-center" mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M7 22q-.825 0-1.412-.587T5 20t.588-1.412T7 18t1.413.588T9 20t-.587 1.413T7 22m10 0q-.825 0-1.412-.587T15 20t.588-1.412T17 18t1.413.588T19 20t-.587 1.413T17 22M6.15 6l2.4 5h7l2.75-5zM5.2 4h14.75q.575 0 .875.513t.025 1.037l-3.55 6.4q-.275.5-.737.775T15.55 13H8.1L7 15h11q.425 0 .713.288T19 16t-.288.713T18 17H7q-1.125 0-1.7-.987t-.05-1.963L6.6 11.6L3 4H2q-.425 0-.712-.288T1 3t.288-.712T2 2h1.625q.275 0 .525.15t.375.425zm3.35 7h7z"/></svg>
+                </div>
                 <h3 class="text-xl font-semibold text-gray-600">Your Cart is Empty</h3>
                 <p class="text-gray-500 mt-2">Add products</p>
             </div>
