@@ -101,8 +101,8 @@ function createProductCard(product) {
                 <h3 class="text-lg font-bold text-gray-800 truncate mb-2" title="${product.proName}">
                     ${product.proName}
                 </h3>
-                <div>
-                   <img src="assets/img/${product.proImg}.png">
+                <div class="flex justify-center">
+                   <img class="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48" src="assets/img/${product.proImg}.png">
                 </div>
                 <!-- Price -->
                 <div class="mb-4">
