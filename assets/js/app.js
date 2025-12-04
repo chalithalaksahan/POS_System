@@ -30,17 +30,23 @@ function posInterface(){
                 </div>
             </div>
             <!-- product Area -->
-            <div class="bg-white p-8 w-full h-100 mt-7 rounded-xl">
+            <div class="bg-white p-8 w-full mt-7 rounded-xl">
                 <h2 class="text-2xl font-bold">Products</h2>
                 <div id="products"></div>
             </div>
-            <div class="bg-white p-8 w-full h-100 mt-7 rounded-xl">
+            <div class="bg-white p-8 w-full mt-7 rounded-xl">
                 <div class="flex items-center">
                     <img src="assets/img/shopping-cart-sm.svg" class="h-10" alt="">
                     <h2 class="text-2xl font-bold ml-3">Shopping Cart</h2>
                 </div>
                 
-                <div id="shoppingCart" ></div>
+                <div id="shoppingCart" >
+                    <div class="flex justify-center text-gray-400 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M7 22q-.825 0-1.412-.587T5 20t.588-1.412T7 18t1.413.588T9 20t-.587 1.413T7 22m10 0q-.825 0-1.412-.587T15 20t.588-1.412T17 18t1.413.588T19 20t-.587 1.413T17 22M6.15 6l2.4 5h7l2.75-5zM5.2 4h14.75q.575 0 .875.513t.025 1.037l-3.55 6.4q-.275.5-.737.775T15.55 13H8.1L7 15h11q.425 0 .713.288T19 16t-.288.713T18 17H7q-1.125 0-1.7-.987t-.05-1.963L6.6 11.6L3 4H2q-.425 0-.712-.288T1 3t.288-.712T2 2h1.625q.275 0 .525.15t.375.425zm3.35 7h7z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 text-center">Your Cart is Empty</h3>
+                    <p class="text-gray-500 mt-2 text-center">Add products</p>
+                </div>
             </div>
     `;
      setTimeout(() => {
@@ -65,7 +71,9 @@ function displayProducts() {
     if (products.length === 0) {
         productsContainer.innerHTML = `
             <div class="text-center py-10">
-                <div class="text-gray-400 text-5xl mb-4">📦</div>
+                <div class="text-gray-400 text-5xl mb-4 flex justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M11 19.425v-6.85L5 9.1v6.85zm2 0l6-3.475V9.1l-6 3.475zm-2 2.3L4 17.7q-.475-.275-.737-.725t-.263-1v-7.95q0-.55.263-1T4 6.3l7-4.025Q11.475 2 12 2t1 .275L20 6.3q.475.275.738.725t.262 1v7.95q0 .55-.262 1T20 17.7l-7 4.025Q12.525 22 12 22t-1-.275m5-13.2l1.925-1.1L12 4l-1.95 1.125zm-4 2.325l1.95-1.125L8.025 6.3l-1.95 1.125z"/></svg>
+                </div>
                 <h3 class="text-xl font-semibold text-gray-600">No Products Yet</h3>
                 <p class="text-gray-500 mt-2">Add your first product to get started</p>
             </div>
@@ -101,7 +109,9 @@ function createProductCard(product) {
                 <h3 class="text-lg font-bold text-gray-800 truncate mb-2" title="${product.proName}">
                     ${product.proName}
                 </h3>
-                
+                <div class="flex justify-center">
+                   <img class="w-48 h-48 sm:w-48 sm:h-48 md:w-52 md:h-52 lg:w-58 lg:h-58" src="assets/img/${product.proImg}.png">
+                </div>
                 <!-- Price -->
                 <div class="mb-4">
                     <span class="text-3xl font-bold text-blue-700">Rs ${parseFloat(product.proPrice).toFixed(2)}</span>
@@ -156,6 +166,7 @@ function productInterface(){
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Price</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Category</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Stock</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Img Name</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Action</th>
                             </tr>
                         </thead>
@@ -210,6 +221,13 @@ function productInterface(){
                     </label>
                     <input type="text" id="productStock" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
                     placeholder="Enter stock">
+                </div>
+                 <div class="mb-6">
+                    <label for="productImg" class="block text-gray-700 text-sm font-bold mb-2">
+                        Image
+                    </label>
+                    <input type="text" id="productImg" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
+                    placeholder="Enter image name">
                 </div>
                 <!-- Modal Footer -->
                  <div class="flex justify-center gap-3">
@@ -357,11 +375,12 @@ function orderInterface(){
             <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                    <select id="dateFilter" onchange="filterOrders()" class="w-full p-2 border border-gray-300 rounded">
-                        <option value="all">All Time</option>
+                     <select id="dateFilter" onchange="filterOrders()" class="border rounded-lg px-3 py-2">
+                        <option value="all">All Dates</option>
                         <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
+                        <option value="week">Last 7 Days</option>
+                        <option value="month">Last 30 Days</option>
+                        <option value="year">Last Year</option>
                     </select>
                 </div>
                 <div>
@@ -423,7 +442,9 @@ function orderInterface(){
             
             <!-- No Orders Message -->
             <div id="noOrdersMessage" class="text-center py-10 hidden">
-                <div class="text-gray-400 text-6xl mb-4">📋</div>
+                <div class= "flex justify-center mb-4 ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="m16.81 8.94l-3.75-3.75L4 14.25V18h3.75zM6 16v-.92l7.06-7.06l.92.92L6.92 16zm13.71-9.96a.996.996 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83l3.75 3.75zM2 20h20v4H2z"/></svg>
+                </div>
                 <h3 class="text-xl font-semibold text-gray-600">No Orders Yet</h3>
                 <p class="text-gray-500 mt-2">Complete your first sale to see orders here</p>
             </div>
@@ -448,7 +469,7 @@ function orderInterface(){
 }
 function loadOrderHistory() {
     const orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
-    const orderTableBody = document.getElementById('orderTableBody');
+    const orderTableBody = document.getElementById('');
     const noOrdersMessage = document.getElementById('noOrdersMessage');
     const totalOrdersCount = document.getElementById('totalOrdersCount');
     const totalRevenue = document.getElementById('totalRevenue');
@@ -461,7 +482,7 @@ function loadOrderHistory() {
     // Calculate total revenue
     const revenue = orders.reduce((sum, order) => sum + order.total, 0);
     if (totalRevenue) {
-        totalRevenue.textContent = `$${revenue.toFixed(2)}`;
+        totalRevenue.textContent = `Rs. ${revenue.toFixed(2)}`;
     }
     
     if (orders.length === 0) {
@@ -477,8 +498,7 @@ function loadOrderHistory() {
         orderTableBody.innerHTML = orders.map(order => `
             <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">${order.orderId}</div>
-                    <div class="text-xs text-gray-500">${order.orderNumber || ''}</div>
+                    <div class="text-sm font-medium text-gray-900">#${order.orderId}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900">${order.customer || 'Walk-in Customer'}</div>
@@ -491,7 +511,7 @@ function loadOrderHistory() {
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-bold text-green-600">$${order.total.toFixed(2)}</div>
+                    <div class="text-sm font-bold text-green-600">Rs. ${order.total.toFixed(2)}</div>
                     <div class="text-xs text-gray-500">
                         Subtotal: $${order.subtotal.toFixed(2)} | Tax: $${order.tax.toFixed(2)}
                     </div>
@@ -518,6 +538,8 @@ function loadOrderHistory() {
             </tr>
         `).join('');
     }
+    loadCustomerFilter();
+    displayFilteredOrders(orders);
 }
 
 // View order details
@@ -577,9 +599,9 @@ function viewOrderDetails(orderId) {
                                         <div class="font-medium">${item.proName}</div>
                                         <div class="text-sm text-gray-500">ID: ${item.proId}</div>
                                     </td>
-                                    <td class="px-4 py-3">$${item.proPrice.toFixed(2)}</td>
+                                    <td class="px-4 py-3">Rs.  ${item.proPrice.toFixed(2)}</td>
                                     <td class="px-4 py-3">${item.quantity}</td>
-                                    <td class="px-4 py-3 font-semibold">$${(item.proPrice * item.quantity).toFixed(2)}</td>
+                                    <td class="px-4 py-3 font-semibold">Rs. ${(item.proPrice * item.quantity).toFixed(2)}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -591,15 +613,15 @@ function viewOrderDetails(orderId) {
             <div class="border-t border-gray-200 pt-6">
                 <div class="flex justify-between mb-2">
                     <span class="text-gray-600">Subtotal:</span>
-                    <span class="font-medium">$${order.subtotal.toFixed(2)}</span>
+                    <span class="font-medium">Rs.  ${order.subtotal.toFixed(2)}</span>
                 </div>
                 <div class="flex justify-between mb-2">
                     <span class="text-gray-600">Tax (8%):</span>
-                    <span class="font-medium">$${order.tax.toFixed(2)}</span>
+                    <span class="font-medium">Rs. ${order.tax.toFixed(2)}</span>
                 </div>
                 <div class="flex justify-between text-xl font-bold mt-4 pt-4 border-t border-gray-200">
                     <span>Total:</span>
-                    <span class="text-green-600">$${order.total.toFixed(2)}</span>
+                    <span class="text-green-600">Rs. ${order.total.toFixed(2)}</span>
                 </div>
             </div>
             
@@ -646,7 +668,7 @@ function printOrder(orderId) {
         <body>
             <div class="receipt">
                 <div class="header">
-                    <h2>YOUR STORE</h2>
+                    <h2>DSN Supermarket</h2>
                     <p>Order: ${order.orderId}</p>
                     <p>Date: ${order.date}</p>
                     <p>Customer: ${order.customer}</p>
@@ -655,14 +677,14 @@ function printOrder(orderId) {
                 ${order.items.map(item => `
                     <div class="item">
                         <div>${item.proName} x${item.quantity}</div>
-                        <div>$${item.proPrice.toFixed(2)} each = $${(item.proPrice * item.quantity).toFixed(2)}</div>
+                        <div>RS. ${item.proPrice.toFixed(2)} each = Rs. ${(item.proPrice * item.quantity).toFixed(2)}</div>
                     </div>
                 `).join('')}
                 <hr>
                 <div class="total">
-                    <div>Subtotal: $${order.subtotal.toFixed(2)}</div>
-                    <div>Tax: $${order.tax.toFixed(2)}</div>
-                    <div>Total: $${order.total.toFixed(2)}</div>
+                    <div>Subtotal: Rs. ${order.subtotal.toFixed(2)}</div>
+                    <div>Tax: Rs. ${order.tax.toFixed(2)}</div>
+                    <div>Total: Rs. ${order.total.toFixed(2)}</div>
                 </div>
             </div>
             <script>
@@ -726,20 +748,48 @@ function filterOrders() {
     let filteredOrders = orders;
     
     // Date filter
-    if (dateFilter !== 'all') {
+    if (dateFilter && dateFilter !== 'all') {
         const now = new Date();
         filteredOrders = filteredOrders.filter(order => {
-            const orderDate = new Date(order.timestamp || order.date);
+            // Parse the order date - assuming order.date is in a format like "2024-01-15 14:30:00"
+            let orderDate;
+            
+            // Try to parse timestamp first, then date string
+            if (order.timestamp) {
+                orderDate = new Date(order.timestamp);
+            } else if (order.date) {
+                // Handle different date formats
+                orderDate = new Date(order.date);
+            } else {
+                return false; // No date found
+            }
+            
+            // If date parsing failed, skip this order
+            if (isNaN(orderDate.getTime())) {
+                console.warn('Invalid date for order:', order.orderId, order.date);
+                return false;
+            }
+            
+            // Reset hours for date comparison
+            const orderDateStart = new Date(orderDate);
+            orderDateStart.setHours(0, 0, 0, 0);
+            const nowStart = new Date(now);
+            nowStart.setHours(0, 0, 0, 0);
             
             switch(dateFilter) {
                 case 'today':
-                    return orderDate.toDateString() === now.toDateString();
+                    return orderDateStart.getTime() === nowStart.getTime();
                 case 'week':
-                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    return orderDate >= weekAgo;
+                    const weekAgo = new Date(nowStart.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return orderDateStart >= weekAgo;
                 case 'month':
-                    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-                    return orderDate >= monthAgo;
+                    const monthAgo = new Date(nowStart);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    return orderDateStart >= monthAgo;
+                case 'year':
+                    const yearAgo = new Date(nowStart);
+                    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+                    return orderDateStart >= yearAgo;
                 default:
                     return true;
             }
@@ -747,17 +797,37 @@ function filterOrders() {
     }
     
     // Customer filter
-    if (customerFilter !== 'all') {
-        filteredOrders = filteredOrders.filter(order => order.customer === customerFilter);
+    if (customerFilter && customerFilter !== 'all') {
+        filteredOrders = filteredOrders.filter(order => {
+            const orderCustomer = order.customer || 'Walk-in Customer';
+            return orderCustomer === customerFilter;
+        });
     }
     
     // Status filter
-    if (statusFilter !== 'all') {
+    if (statusFilter && statusFilter !== 'all') {
         filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
     }
     
+    // Update stats for filtered orders
+    updateStats(filteredOrders);
     displayFilteredOrders(filteredOrders);
 }
+
+function updateStats(filteredOrders) {
+    const totalOrdersCount = document.getElementById('totalOrdersCount');
+    const totalRevenue = document.getElementById('totalRevenue');
+    
+    if (totalOrdersCount) {
+        totalOrdersCount.textContent = filteredOrders.length;
+    }
+    
+    if (totalRevenue) {
+        const revenue = filteredOrders.reduce((sum, order) => sum + order.total, 0);
+        totalRevenue.textContent = `Rs. ${revenue.toFixed(2)}`;
+    }
+}
+
 
 // Display filtered orders
 function displayFilteredOrders(filteredOrders) {
@@ -772,31 +842,60 @@ function displayFilteredOrders(filteredOrders) {
     
     if (noOrdersMessage) noOrdersMessage.classList.add('hidden');
     
-    // Similar display logic as loadOrderHistory but with filteredOrders
+    // Display orders (most recent first)
     if (orderTableBody) {
-        orderTableBody.innerHTML = filteredOrders.map(order => `
-            <tr class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap">${order.orderId}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${order.customer || 'Walk-in Customer'}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${order.items.length} items</td>
-                <td class="px-6 py-4 whitespace-nowrap">$${order.total.toFixed(2)}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${order.date}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                          'bg-red-100 text-red-800'}">
-                        ${order.status}
-                    </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <button onclick="viewOrderDetails('${order.orderId}')" 
-                            class="text-blue-600 hover:text-blue-900">View</button>
-                </td>
-            </tr>
-        `).join('');
+        orderTableBody.innerHTML = filteredOrders
+            .sort((a, b) => {
+                // Sort by date descending (most recent first)
+                const dateA = a.timestamp ? new Date(a.timestamp) : new Date(a.date);
+                const dateB = b.timestamp ? new Date(b.timestamp) : new Date(b.date);
+                return dateB - dateA;
+            })
+            .map(order => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">#${order.orderId}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${order.customer || 'Walk-in Customer'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${order.items.reduce((sum, item) => sum + item.quantity, 0)} items</div>
+                        <div class="text-xs text-gray-500">
+                            ${order.items.slice(0, 2).map(item => item.proName).join(', ')}
+                            ${order.items.length > 2 ? ` +${order.items.length - 2} more` : ''}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-bold text-green-600">Rs. ${order.total.toFixed(2)}</div>
+                        <div class="text-xs text-gray-500">
+                            Subtotal: Rs. ${order.subtotal.toFixed(2)} | Tax: Rs. ${order.tax.toFixed(2)}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${order.date}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                              order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                              'bg-red-100 text-red-800'}">
+                            ${order.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="viewOrderDetails('${order.orderId}')" 
+                                class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                        <button onclick="printOrder('${order.orderId}')" 
+                                class="text-gray-600 hover:text-gray-900 mr-3">Print</button>
+                        <button onclick="deleteOrder('${order.orderId}')" 
+                                class="text-red-600 hover:text-red-900">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
     }
 }
+
 pos.addEventListener('click',posInterface);
 product.addEventListener('click',productInterface);
 customer.addEventListener('click',customerInterface);
@@ -854,31 +953,60 @@ function incrementProductId() {
 //form Submit
 
 document.addEventListener('submit', e => {
-     if (e.target && e.target.id === 'productForm') {
-   e.preventDefault();
+    if (e.target && e.target.id === 'productForm') {
+        e.preventDefault();
 
-   
-    const productId = incrementProductId();
-    const productName = document.getElementById('productName').value.trim();
-    const productPrice = document.getElementById('productPrice').value.trim();
-    const productCategory = document.getElementById('productCategory').value.trim();
-    const productStock = document.getElementById('productStock').value.trim();
+        const productIdInput = document.getElementById('productId');
+        const productName = document.getElementById('productName').value.trim();
+        const productPrice = parseFloat(document.getElementById('productPrice').value.trim());
+        const productCategory = document.getElementById('productCategory').value.trim();
+        const productStock = parseInt(document.getElementById('productStock').value.trim());
+        const imgName = document.getElementById('productImg').value.trim();
 
-      let products = localStorage.getItem('productData');
-      let productsArray = products ? JSON.parse(products) : [];
+        let products = JSON.parse(localStorage.getItem('productData')) || [];
+        
+        // Check if we're editing an existing product
+        if (productIdInput.value) {
+            // EDIT MODE: Update existing product
+            const existingId = parseInt(productIdInput.value);
+            const productIndex = products.findIndex(p => p.proId === existingId);
+            
+            if (productIndex !== -1) {
+                // Update existing product
+                products[productIndex] = {
+                    ...products[productIndex],
+                    proName: productName,
+                    proPrice: productPrice,
+                    proCategory: productCategory,
+                    proStock: productStock,
+                    proImg: imgName
+                };
+                
+                localStorage.setItem('productData', JSON.stringify(products));
+                showToast('Product updated successfully!', 'success');
+            }
+        } else {
+            // CREATE MODE: Add new product
+            const productId = incrementProductId();
+            const product = {
+                proId: productId,
+                proName: productName,
+                proPrice: productPrice,
+                proCategory: productCategory,
+                proStock: productStock,
+                proImg: imgName
+            };
+            
+            products.push(product);
+            localStorage.setItem('productData', JSON.stringify(products));
+            showToast('Product added successfully!', 'success');
+        }
 
-    const product = {
-        proId : productId,
-        proName : productName,
-        proPrice : productPrice,
-        proCategory : productCategory,
-        proStock : productStock 
-
-    };
-    productsArray.push(product);
-    localStorage.setItem('productData', JSON.stringify(productsArray));
-    document.getElementById('proModal').classList.add('hidden');
-    loadProducts();
+        // Reset form and close modal
+        document.getElementById('productForm').reset();
+        productIdInput.value = ''; // Clear the hidden ID
+        document.getElementById('proModal').classList.add('hidden');
+        loadProducts();
     }
 });
    
@@ -892,8 +1020,11 @@ function loadProducts(){
         // Show message when no products
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                <div class="flex justify-center"> <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3h-1V2c0-.55-.45-1-1-1s-1 .45-1 1v1H8V2c0-.55-.45-1-1-1s-1 .45-1 1v1H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3m6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1z"/></svg>
+                </div>
                     No products found. Add your first product!
+                    
                 </td>
             </tr>
         `;
@@ -905,26 +1036,29 @@ function loadProducts(){
         row.className = 'hover:bg-gray-50';
         row.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                ${product.proId || product.id || '-'}
+                ${product.proId || '-'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${product.proName || product.name || '-'}
+                ${product.proName || '-'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                Rs ${product.proPrice || product.price || '0.00'}
+                Rs ${product.proPrice || '0.00'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${product.proCategory || product.category || '-'}
+                ${product.proCategory || '-'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${product.proStock || product.stock || '0'}
+                ${product.proStock || '0'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${product.proImg ||  '0'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button onclick="editProduct(${product.proId || product.id})" 
+                <button onclick="editProduct(${product.proId})" 
                     class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2 text-xs">
                     Edit
                 </button>
-                <button onclick="deleteProduct(${product.proId || product.id})" 
+                <button onclick="deleteProduct(${product.proId})" 
                     class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">
                     Delete
                 </button>
@@ -951,6 +1085,7 @@ function editProduct(id) {
         document.getElementById('productPrice').value = product.proPrice;
         document.getElementById('productCategory').value = product.proCategory;
         document.getElementById('productStock').value = product.proStock;
+        document.getElementById('productImg').value = product.proImg;
         
         document.getElementById('modalTitle').textContent = 'Edit Product';
         document.getElementById('proModal').classList.remove('hidden');
@@ -1004,26 +1139,49 @@ document.addEventListener('submit', e => {
    e.preventDefault();
 
    
-    const customerId = incrementCustomerId();
-    const customerName = document.getElementById('customerName').value.trim();
-    const customerEmail = document.getElementById('email').value.trim();
-    const customerPhone = document.getElementById('phone').value.trim();
+    const customerIdInput = document.getElementById('customerId');
+        const customerName = document.getElementById('customerName').value.trim();
+        const customerEmail = document.getElementById('email').value.trim();
+        const customerPhone = document.getElementById('phone').value.trim();
 
-
-      let customers = localStorage.getItem('customerData');
-      let customersArray = customers ? JSON.parse(customers) : [];
-
-    const customer = {
-        cusId : customerId,
-        cusName : customerName,
-        cusEmail : customerEmail,
-        cusPhone : customerPhone
-
-    };
-    customersArray.push(customer);
-    localStorage.setItem('customerData', JSON.stringify(customersArray));
-    document.getElementById('cusModal').classList.add('hidden');
-    loadCustomers();
+        let customers = JSON.parse(localStorage.getItem('customerData')) || [];
+        
+        // Check if we're editing an existing customer
+        if (customerIdInput.value) {
+            // EDIT MODE: Update existing customer
+            const existingId = parseInt(customerIdInput.value);
+            const customerIndex = customers.findIndex(c => c.cusId === existingId);
+            
+            if (customerIndex !== -1) {
+                // Update existing customer
+                customers[customerIndex] = {
+                    ...customers[customerIndex],
+                    cusName: customerName,
+                    cusEmail: customerEmail,
+                    cusPhone: customerPhone
+                };
+                
+                localStorage.setItem('customerData', JSON.stringify(customers));
+                showToast('Customer updated successfully!', 'success');
+            }
+    }else{
+         // CREATE MODE: Add new customer
+            const customerId = incrementCustomerId();
+            const customer = {
+                cusId: customerId,
+                cusName: customerName,
+                cusEmail: customerEmail,
+                cusPhone: customerPhone
+            };
+            
+            customers.push(customer);
+            localStorage.setItem('customerData', JSON.stringify(customers));
+            showToast('Customer added successfully!', 'success');
+         }
+            document.getElementById('customerForm').reset();
+        customerIdInput.value = ''; // Clear the hidden ID
+        document.getElementById('cusModal').classList.add('hidden');
+        loadCustomers();
     }
 });
 
@@ -1038,6 +1196,7 @@ function loadCustomers(){
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                    <div class="flex justify-center"> <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3h-1V2c0-.55-.45-1-1-1s-1 .45-1 1v1H8V2c0-.55-.45-1-1-1s-1 .45-1 1v1H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3m6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1z"/></svg></div>
                     No customers found. Add first customer!
                 </td>
             </tr>
@@ -1129,7 +1288,9 @@ function shoppingCartInterface() {
             
             <!-- Empty Cart Message -->
             <div id="emptyCartMessage" class="hidden text-center py-10">
-                <div class="text-gray-400 text-6xl mb-4">🛒</div>
+                <div class="text-gray-400 flex justify-center" mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M7 22q-.825 0-1.412-.587T5 20t.588-1.412T7 18t1.413.588T9 20t-.587 1.413T7 22m10 0q-.825 0-1.412-.587T15 20t.588-1.412T17 18t1.413.588T19 20t-.587 1.413T17 22M6.15 6l2.4 5h7l2.75-5zM5.2 4h14.75q.575 0 .875.513t.025 1.037l-3.55 6.4q-.275.5-.737.775T15.55 13H8.1L7 15h11q.425 0 .713.288T19 16t-.288.713T18 17H7q-1.125 0-1.7-.987t-.05-1.963L6.6 11.6L3 4H2q-.425 0-.712-.288T1 3t.288-.712T2 2h1.625q.275 0 .525.15t.375.425zm3.35 7h7z"/></svg>
+                </div>
                 <h3 class="text-xl font-semibold text-gray-600">Your Cart is Empty</h3>
                 <p class="text-gray-500 mt-2">Add products</p>
             </div>
@@ -1230,6 +1391,7 @@ function loadCartItems() {
                 </div>
             </div>
         `;
+        
     }).join('');
     
     // Add divider after items
@@ -1244,6 +1406,8 @@ function loadCartItems() {
     document.getElementById('subtotalAmount').textContent = `Rs. ${subtotal.toFixed(2)}`;
     document.getElementById('taxAmount').textContent = `Rs. ${tax.toFixed(2)}`;
     document.getElementById('totalAmount').textContent = `Rs. ${total.toFixed(2)}`;
+
+    
 }
 
 // Update cart quantity
@@ -1304,8 +1468,8 @@ function processCheckout() {
     const total = subtotal + tax;
 
       // Get selected customer
-    const customerSelect = document.getElementById('selectCustomer');
-    const customerName = customerSelect ? customerSelect.value : 'Walk-in Customer';
+    let customerSelect = document.getElementById('selectCustomer');
+    let customerName = customerSelect ? customerSelect.value : 'Walk-in Customer';
 
      // Get current products to update stock
     const products = JSON.parse(localStorage.getItem('productData')) || [];
@@ -1348,11 +1512,11 @@ function processCheckout() {
     
     // Save updated products back to localStorage
     localStorage.setItem('productData', JSON.stringify(updatedProducts));
-    
+  
     // Create order object
     const order = {
         orderId: 'ORD' + Date.now(),
-        orderNumber: generateOrderNumber(),
+        orderNumber: '#',
         items: [...cart], // Clone cart items
         subtotal: subtotal,
         tax: tax,
@@ -1363,15 +1527,15 @@ function processCheckout() {
         status: 'completed',
         paymentMethod: 'Cash' 
     };
-    
+   
     // Save order to localStorage
     saveOrder(order);
-    
+     
     // Clear cart
     localStorage.removeItem('posCart');
-    
+  
     // Show success message
-    alert(`Order completed successfully!\nOrder ID: ${order.orderId}\nTotal: $${total.toFixed(2)}`);
+    showToast(`Order completed successfully!\nOrder ID: ${order.orderId}\nTotal: $${total.toFixed(2)}`);
     
     // Reload cart (will show empty)
     loadCartItems();
@@ -1379,17 +1543,19 @@ function processCheckout() {
     // Show toast
     showToast('Order completed!');
     loadProducts();
+    loadOrderHistory();
     
 }
 
 // Save order to history
 function saveOrder(order) {
+   
     // Get existing orders
     let orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
     
     // Add order to beginning of array (most recent first)
     orders.unshift(order);
-    
+     
     // Keep only last 50 orders to prevent localStorage overflow
     if (orders.length > 50) {
         orders = orders.slice(0, 50);
@@ -1397,9 +1563,9 @@ function saveOrder(order) {
     
     // Save back to localStorage
     localStorage.setItem('orderHistory', JSON.stringify(orders));
-    
+ 
     // Update order stats
-    updateOrderStats();
+   // updateOrderStats();
     
     return order;
 }
@@ -1440,7 +1606,8 @@ function updateCartInput(productId, newQuantity) {
 }
 
 
-    function addToCart(productId, quantity=1) {
+    function addToCart(productId) {
+    const quantity = 1;
     const products = JSON.parse(localStorage.getItem('productData')) || [];
     const product = products.find(p => p.proId == productId);
     
@@ -1475,5 +1642,7 @@ function updateCartInput(productId, newQuantity) {
 
     
     showToast(`Added ${quantity} × ${product.proName} to cart!`);
-    loadCartItems();
+
+    shoppingCartInterface();
+   
 }
