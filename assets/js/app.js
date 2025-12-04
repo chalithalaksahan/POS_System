@@ -1085,26 +1085,49 @@ document.addEventListener('submit', e => {
    e.preventDefault();
 
    
-    const customerId = incrementCustomerId();
-    const customerName = document.getElementById('customerName').value.trim();
-    const customerEmail = document.getElementById('email').value.trim();
-    const customerPhone = document.getElementById('phone').value.trim();
+    const customerIdInput = document.getElementById('customerId');
+        const customerName = document.getElementById('customerName').value.trim();
+        const customerEmail = document.getElementById('email').value.trim();
+        const customerPhone = document.getElementById('phone').value.trim();
 
-
-      let customers = localStorage.getItem('customerData');
-      let customersArray = customers ? JSON.parse(customers) : [];
-
-    const customer = {
-        cusId : customerId,
-        cusName : customerName,
-        cusEmail : customerEmail,
-        cusPhone : customerPhone
-
-    };
-    customersArray.push(customer);
-    localStorage.setItem('customerData', JSON.stringify(customersArray));
-    document.getElementById('cusModal').classList.add('hidden');
-    loadCustomers();
+        let customers = JSON.parse(localStorage.getItem('customerData')) || [];
+        
+        // Check if we're editing an existing customer
+        if (customerIdInput.value) {
+            // EDIT MODE: Update existing customer
+            const existingId = parseInt(customerIdInput.value);
+            const customerIndex = customers.findIndex(c => c.cusId === existingId);
+            
+            if (customerIndex !== -1) {
+                // Update existing customer
+                customers[customerIndex] = {
+                    ...customers[customerIndex],
+                    cusName: customerName,
+                    cusEmail: customerEmail,
+                    cusPhone: customerPhone
+                };
+                
+                localStorage.setItem('customerData', JSON.stringify(customers));
+                showToast('Customer updated successfully!', 'success');
+            }
+    }else{
+         // CREATE MODE: Add new customer
+            const customerId = incrementCustomerId();
+            const customer = {
+                cusId: customerId,
+                cusName: customerName,
+                cusEmail: customerEmail,
+                cusPhone: customerPhone
+            };
+            
+            customers.push(customer);
+            localStorage.setItem('customerData', JSON.stringify(customers));
+            showToast('Customer added successfully!', 'success');
+         }
+            document.getElementById('customerForm').reset();
+        customerIdInput.value = ''; // Clear the hidden ID
+        document.getElementById('cusModal').classList.add('hidden');
+        loadCustomers();
     }
 });
 
