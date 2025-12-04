@@ -101,7 +101,9 @@ function createProductCard(product) {
                 <h3 class="text-lg font-bold text-gray-800 truncate mb-2" title="${product.proName}">
                     ${product.proName}
                 </h3>
-                
+                <div>
+                   <img src="assets/img/${product.proImg}.png">
+                </div>
                 <!-- Price -->
                 <div class="mb-4">
                     <span class="text-3xl font-bold text-blue-700">Rs ${parseFloat(product.proPrice).toFixed(2)}</span>
@@ -156,6 +158,7 @@ function productInterface(){
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Price</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Category</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Stock</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Img Name</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Action</th>
                             </tr>
                         </thead>
@@ -210,6 +213,13 @@ function productInterface(){
                     </label>
                     <input type="text" id="productStock" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
                     placeholder="Enter stock">
+                </div>
+                 <div class="mb-6">
+                    <label for="productImg" class="block text-gray-700 text-sm font-bold mb-2">
+                        Image
+                    </label>
+                    <input type="text" id="productImg" required class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:outline-1  focus:ring-2 focus:ring-[$36BBA7]"
+                    placeholder="Enter image name">
                 </div>
                 <!-- Modal Footer -->
                  <div class="flex justify-center gap-3">
@@ -941,6 +951,7 @@ document.addEventListener('submit', e => {
         const productPrice = parseFloat(document.getElementById('productPrice').value.trim());
         const productCategory = document.getElementById('productCategory').value.trim();
         const productStock = parseInt(document.getElementById('productStock').value.trim());
+        const imgName = document.getElementById('productImg').value.trim();
 
         let products = JSON.parse(localStorage.getItem('productData')) || [];
         
@@ -957,7 +968,8 @@ document.addEventListener('submit', e => {
                     proName: productName,
                     proPrice: productPrice,
                     proCategory: productCategory,
-                    proStock: productStock
+                    proStock: productStock,
+                    proImg: imgName
                 };
                 
                 localStorage.setItem('productData', JSON.stringify(products));
@@ -971,7 +983,8 @@ document.addEventListener('submit', e => {
                 proName: productName,
                 proPrice: productPrice,
                 proCategory: productCategory,
-                proStock: productStock
+                proStock: productStock,
+                proImg: imgName
             };
             
             products.push(product);
@@ -1010,26 +1023,29 @@ function loadProducts(){
         row.className = 'hover:bg-gray-50';
         row.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                ${product.proId || product.id || '-'}
+                ${product.proId || '-'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${product.proName || product.name || '-'}
+                ${product.proName || '-'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                Rs ${product.proPrice || product.price || '0.00'}
+                Rs ${product.proPrice || '0.00'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${product.proCategory || product.category || '-'}
+                ${product.proCategory || '-'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${product.proStock || product.stock || '0'}
+                ${product.proStock || '0'}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${product.proImg ||  '0'}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button onclick="editProduct(${product.proId || product.id})" 
+                <button onclick="editProduct(${product.proId})" 
                     class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2 text-xs">
                     Edit
                 </button>
-                <button onclick="deleteProduct(${product.proId || product.id})" 
+                <button onclick="deleteProduct(${product.proId})" 
                     class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">
                     Delete
                 </button>
@@ -1056,6 +1072,7 @@ function editProduct(id) {
         document.getElementById('productPrice').value = product.proPrice;
         document.getElementById('productCategory').value = product.proCategory;
         document.getElementById('productStock').value = product.proStock;
+        document.getElementById('productImg').value = product.proImg;
         
         document.getElementById('modalTitle').textContent = 'Edit Product';
         document.getElementById('proModal').classList.remove('hidden');
