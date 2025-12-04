@@ -357,11 +357,12 @@ function orderInterface(){
             <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                    <select id="dateFilter" onchange="filterOrders()" class="w-full p-2 border border-gray-300 rounded">
-                        <option value="all">All Time</option>
+                     <select id="dateFilter" onchange="filterOrders()" class="border rounded-lg px-3 py-2">
+                        <option value="all">All Dates</option>
                         <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
+                        <option value="week">Last 7 Days</option>
+                        <option value="month">Last 30 Days</option>
+                        <option value="year">Last Year</option>
                     </select>
                 </div>
                 <div>
@@ -461,7 +462,7 @@ function loadOrderHistory() {
     // Calculate total revenue
     const revenue = orders.reduce((sum, order) => sum + order.total, 0);
     if (totalRevenue) {
-        totalRevenue.textContent = `$${revenue.toFixed(2)}`;
+        totalRevenue.textContent = `Rs. ${revenue.toFixed(2)}`;
     }
     
     if (orders.length === 0) {
@@ -518,6 +519,8 @@ function loadOrderHistory() {
             </tr>
         `).join('');
     }
+    loadCustomerFilter();
+    displayFilteredOrders(orders);
 }
 
 // View order details
@@ -577,9 +580,9 @@ function viewOrderDetails(orderId) {
                                         <div class="font-medium">${item.proName}</div>
                                         <div class="text-sm text-gray-500">ID: ${item.proId}</div>
                                     </td>
-                                    <td class="px-4 py-3">$${item.proPrice.toFixed(2)}</td>
+                                    <td class="px-4 py-3">Rs.  ${item.proPrice.toFixed(2)}</td>
                                     <td class="px-4 py-3">${item.quantity}</td>
-                                    <td class="px-4 py-3 font-semibold">$${(item.proPrice * item.quantity).toFixed(2)}</td>
+                                    <td class="px-4 py-3 font-semibold">Rs. ${(item.proPrice * item.quantity).toFixed(2)}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -646,7 +649,7 @@ function printOrder(orderId) {
         <body>
             <div class="receipt">
                 <div class="header">
-                    <h2>YOUR STORE</h2>
+                    <h2>DSN Supermarket</h2>
                     <p>Order: ${order.orderId}</p>
                     <p>Date: ${order.date}</p>
                     <p>Customer: ${order.customer}</p>
@@ -655,14 +658,14 @@ function printOrder(orderId) {
                 ${order.items.map(item => `
                     <div class="item">
                         <div>${item.proName} x${item.quantity}</div>
-                        <div>$${item.proPrice.toFixed(2)} each = $${(item.proPrice * item.quantity).toFixed(2)}</div>
+                        <div>RS. ${item.proPrice.toFixed(2)} each = Rs. ${(item.proPrice * item.quantity).toFixed(2)}</div>
                     </div>
                 `).join('')}
                 <hr>
                 <div class="total">
-                    <div>Subtotal: $${order.subtotal.toFixed(2)}</div>
-                    <div>Tax: $${order.tax.toFixed(2)}</div>
-                    <div>Total: $${order.total.toFixed(2)}</div>
+                    <div>Subtotal: Rs. ${order.subtotal.toFixed(2)}</div>
+                    <div>Tax: Rs. ${order.tax.toFixed(2)}</div>
+                    <div>Total: Rs. ${order.total.toFixed(2)}</div>
                 </div>
             </div>
             <script>
@@ -726,20 +729,48 @@ function filterOrders() {
     let filteredOrders = orders;
     
     // Date filter
-    if (dateFilter !== 'all') {
+    if (dateFilter && dateFilter !== 'all') {
         const now = new Date();
         filteredOrders = filteredOrders.filter(order => {
-            const orderDate = new Date(order.timestamp || order.date);
+            // Parse the order date - assuming order.date is in a format like "2024-01-15 14:30:00"
+            let orderDate;
+            
+            // Try to parse timestamp first, then date string
+            if (order.timestamp) {
+                orderDate = new Date(order.timestamp);
+            } else if (order.date) {
+                // Handle different date formats
+                orderDate = new Date(order.date);
+            } else {
+                return false; // No date found
+            }
+            
+            // If date parsing failed, skip this order
+            if (isNaN(orderDate.getTime())) {
+                console.warn('Invalid date for order:', order.orderId, order.date);
+                return false;
+            }
+            
+            // Reset hours for date comparison
+            const orderDateStart = new Date(orderDate);
+            orderDateStart.setHours(0, 0, 0, 0);
+            const nowStart = new Date(now);
+            nowStart.setHours(0, 0, 0, 0);
             
             switch(dateFilter) {
                 case 'today':
-                    return orderDate.toDateString() === now.toDateString();
+                    return orderDateStart.getTime() === nowStart.getTime();
                 case 'week':
-                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    return orderDate >= weekAgo;
+                    const weekAgo = new Date(nowStart.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return orderDateStart >= weekAgo;
                 case 'month':
-                    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-                    return orderDate >= monthAgo;
+                    const monthAgo = new Date(nowStart);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    return orderDateStart >= monthAgo;
+                case 'year':
+                    const yearAgo = new Date(nowStart);
+                    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+                    return orderDateStart >= yearAgo;
                 default:
                     return true;
             }
@@ -747,17 +778,37 @@ function filterOrders() {
     }
     
     // Customer filter
-    if (customerFilter !== 'all') {
-        filteredOrders = filteredOrders.filter(order => order.customer === customerFilter);
+    if (customerFilter && customerFilter !== 'all') {
+        filteredOrders = filteredOrders.filter(order => {
+            const orderCustomer = order.customer || 'Walk-in Customer';
+            return orderCustomer === customerFilter;
+        });
     }
     
     // Status filter
-    if (statusFilter !== 'all') {
+    if (statusFilter && statusFilter !== 'all') {
         filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
     }
     
+    // Update stats for filtered orders
+    updateStats(filteredOrders);
     displayFilteredOrders(filteredOrders);
 }
+
+function updateStats(filteredOrders) {
+    const totalOrdersCount = document.getElementById('totalOrdersCount');
+    const totalRevenue = document.getElementById('totalRevenue');
+    
+    if (totalOrdersCount) {
+        totalOrdersCount.textContent = filteredOrders.length;
+    }
+    
+    if (totalRevenue) {
+        const revenue = filteredOrders.reduce((sum, order) => sum + order.total, 0);
+        totalRevenue.textContent = `Rs. ${revenue.toFixed(2)}`;
+    }
+}
+
 
 // Display filtered orders
 function displayFilteredOrders(filteredOrders) {
@@ -772,31 +823,61 @@ function displayFilteredOrders(filteredOrders) {
     
     if (noOrdersMessage) noOrdersMessage.classList.add('hidden');
     
-    // Similar display logic as loadOrderHistory but with filteredOrders
+    // Display orders (most recent first)
     if (orderTableBody) {
-        orderTableBody.innerHTML = filteredOrders.map(order => `
-            <tr class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap">${order.orderId}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${order.customer || 'Walk-in Customer'}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${order.items.length} items</td>
-                <td class="px-6 py-4 whitespace-nowrap">$${order.total.toFixed(2)}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${order.date}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                          'bg-red-100 text-red-800'}">
-                        ${order.status}
-                    </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <button onclick="viewOrderDetails('${order.orderId}')" 
-                            class="text-blue-600 hover:text-blue-900">View</button>
-                </td>
-            </tr>
-        `).join('');
+        orderTableBody.innerHTML = filteredOrders
+            .sort((a, b) => {
+                // Sort by date descending (most recent first)
+                const dateA = a.timestamp ? new Date(a.timestamp) : new Date(a.date);
+                const dateB = b.timestamp ? new Date(b.timestamp) : new Date(b.date);
+                return dateB - dateA;
+            })
+            .map(order => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${order.orderId}</div>
+                        <div class="text-sm text-gray-500">${order.orderNumber || ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${order.customer || 'Walk-in Customer'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${order.items.reduce((sum, item) => sum + item.quantity, 0)} items</div>
+                        <div class="text-xs text-gray-500">
+                            ${order.items.slice(0, 2).map(item => item.proName).join(', ')}
+                            ${order.items.length > 2 ? ` +${order.items.length - 2} more` : ''}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-bold text-green-600">Rs. ${order.total.toFixed(2)}</div>
+                        <div class="text-xs text-gray-500">
+                            Subtotal: Rs. ${order.subtotal.toFixed(2)} | Tax: Rs. ${order.tax.toFixed(2)}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${order.date}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                              order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                              'bg-red-100 text-red-800'}">
+                            ${order.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="viewOrderDetails('${order.orderId}')" 
+                                class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                        <button onclick="printOrder('${order.orderId}')" 
+                                class="text-gray-600 hover:text-gray-900 mr-3">Print</button>
+                        <button onclick="deleteOrder('${order.orderId}')" 
+                                class="text-red-600 hover:text-red-900">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
     }
 }
+
 pos.addEventListener('click',posInterface);
 product.addEventListener('click',productInterface);
 customer.addEventListener('click',customerInterface);
@@ -1230,6 +1311,7 @@ function loadCartItems() {
                 </div>
             </div>
         `;
+        
     }).join('');
     
     // Add divider after items
@@ -1244,6 +1326,8 @@ function loadCartItems() {
     document.getElementById('subtotalAmount').textContent = `Rs. ${subtotal.toFixed(2)}`;
     document.getElementById('taxAmount').textContent = `Rs. ${tax.toFixed(2)}`;
     document.getElementById('totalAmount').textContent = `Rs. ${total.toFixed(2)}`;
+
+    
 }
 
 // Update cart quantity
@@ -1363,10 +1447,10 @@ function processCheckout() {
         status: 'completed',
         paymentMethod: 'Cash' 
     };
-    console.log('hello');
+   
     // Save order to localStorage
     saveOrder(order);
-    
+     
     // Clear cart
     localStorage.removeItem('posCart');
   
@@ -1385,12 +1469,13 @@ function processCheckout() {
 
 // Save order to history
 function saveOrder(order) {
+   
     // Get existing orders
     let orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
     
     // Add order to beginning of array (most recent first)
     orders.unshift(order);
-    
+     
     // Keep only last 50 orders to prevent localStorage overflow
     if (orders.length > 50) {
         orders = orders.slice(0, 50);
@@ -1398,9 +1483,9 @@ function saveOrder(order) {
     
     // Save back to localStorage
     localStorage.setItem('orderHistory', JSON.stringify(orders));
-    
+ 
     // Update order stats
-    updateOrderStats();
+   // updateOrderStats();
     
     return order;
 }
@@ -1477,5 +1562,7 @@ function updateCartInput(productId, newQuantity) {
 
     
     showToast(`Added ${quantity} × ${product.proName} to cart!`);
-    loadCartItems();
+
+    shoppingCartInterface();
+   
 }
