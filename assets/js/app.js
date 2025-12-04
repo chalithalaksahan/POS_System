@@ -479,7 +479,7 @@ function loadOrderHistory() {
             <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm font-medium text-gray-900">${order.orderId}</div>
-                    <div class="text-sm text-gray-500">${order.orderNumber || ''}</div>
+                     <div class="text-sm text-gray-500">${order.orderNumber || ''}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900">${order.customer || 'Walk-in Customer'}</div>
@@ -935,31 +935,57 @@ function incrementProductId() {
 //form Submit
 
 document.addEventListener('submit', e => {
-     if (e.target && e.target.id === 'productForm') {
-   e.preventDefault();
+    if (e.target && e.target.id === 'productForm') {
+        e.preventDefault();
 
-   
-    const productId = incrementProductId();
-    const productName = document.getElementById('productName').value.trim();
-    const productPrice = document.getElementById('productPrice').value.trim();
-    const productCategory = document.getElementById('productCategory').value.trim();
-    const productStock = document.getElementById('productStock').value.trim();
+        const productIdInput = document.getElementById('productId');
+        const productName = document.getElementById('productName').value.trim();
+        const productPrice = parseFloat(document.getElementById('productPrice').value.trim());
+        const productCategory = document.getElementById('productCategory').value.trim();
+        const productStock = parseInt(document.getElementById('productStock').value.trim());
 
-      let products = localStorage.getItem('productData');
-      let productsArray = products ? JSON.parse(products) : [];
+        let products = JSON.parse(localStorage.getItem('productData')) || [];
+        
+        // Check if we're editing an existing product
+        if (productIdInput.value) {
+            // EDIT MODE: Update existing product
+            const existingId = parseInt(productIdInput.value);
+            const productIndex = products.findIndex(p => p.proId === existingId);
+            
+            if (productIndex !== -1) {
+                // Update existing product
+                products[productIndex] = {
+                    ...products[productIndex],
+                    proName: productName,
+                    proPrice: productPrice,
+                    proCategory: productCategory,
+                    proStock: productStock
+                };
+                
+                localStorage.setItem('productData', JSON.stringify(products));
+                showToast('Product updated successfully!', 'success');
+            }
+        } else {
+            // CREATE MODE: Add new product
+            const productId = incrementProductId();
+            const product = {
+                proId: productId,
+                proName: productName,
+                proPrice: productPrice,
+                proCategory: productCategory,
+                proStock: productStock
+            };
+            
+            products.push(product);
+            localStorage.setItem('productData', JSON.stringify(products));
+            showToast('Product added successfully!', 'success');
+        }
 
-    const product = {
-        proId : productId,
-        proName : productName,
-        proPrice : productPrice,
-        proCategory : productCategory,
-        proStock : productStock 
-
-    };
-    productsArray.push(product);
-    localStorage.setItem('productData', JSON.stringify(productsArray));
-    document.getElementById('proModal').classList.add('hidden');
-    loadProducts();
+        // Reset form and close modal
+        document.getElementById('productForm').reset();
+        productIdInput.value = ''; // Clear the hidden ID
+        document.getElementById('proModal').classList.add('hidden');
+        loadProducts();
     }
 });
    
