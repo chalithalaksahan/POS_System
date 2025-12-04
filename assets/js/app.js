@@ -30,11 +30,11 @@ function posInterface(){
                 </div>
             </div>
             <!-- product Area -->
-            <div class="bg-white p-8 w-full h-100 mt-7 rounded-xl">
+            <div class="bg-white p-8 w-full mt-7 rounded-xl">
                 <h2 class="text-2xl font-bold">Products</h2>
                 <div id="products"></div>
             </div>
-            <div class="bg-white p-8 w-full h-100 mt-7 rounded-xl">
+            <div class="bg-white p-8 w-full mt-7 rounded-xl">
                 <div class="flex items-center">
                     <img src="assets/img/shopping-cart-sm.svg" class="h-10" alt="">
                     <h2 class="text-2xl font-bold ml-3">Shopping Cart</h2>
@@ -478,8 +478,7 @@ function loadOrderHistory() {
         orderTableBody.innerHTML = orders.map(order => `
             <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">${order.orderId}</div>
-                     <div class="text-sm text-gray-500">${order.orderNumber || ''}</div>
+                    <div class="text-sm font-medium text-gray-900">#${order.orderId}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900">${order.customer || 'Walk-in Customer'}</div>
@@ -835,8 +834,7 @@ function displayFilteredOrders(filteredOrders) {
             .map(order => `
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">${order.orderId}</div>
-                        <div class="text-sm text-gray-500">${order.orderNumber || ''}</div>
+                        <div class="text-sm font-medium text-gray-900">#${order.orderId}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-900">${order.customer || 'Walk-in Customer'}</div>
@@ -1485,7 +1483,7 @@ function processCheckout() {
     // Create order object
     const order = {
         orderId: 'ORD' + Date.now(),
-        orderNumber: 23,
+        orderNumber: '#',
         items: [...cart], // Clone cart items
         subtotal: subtotal,
         tax: tax,
